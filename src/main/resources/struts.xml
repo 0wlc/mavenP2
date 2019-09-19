@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 指定默认编码集,作用于HttpServletRequest的setCharacterEncoding方法 -->
+	<constant name="struts.i18n.encoding" value="UTF-8"/>
+	<constant name="struts.ui.theme" value="simple" />
+	<!-- 该属性指定需要Struts 2处理的请求后缀，该属性的默认值是action，即所有匹配*.action的请求
+	    都 由Struts2处理。如果用户需要指定多个请求后缀，则多个后缀之间以英文逗号（,）隔开。 -->
+	<constant name="struts.action.extension" value="do"/>
+	<!-- 文件上传 -->
+	<constant name="struts.multipart.saveDir" value="/tmp"/>
+	<constant name="struts.multipart.maxSize" value="16777216"/>
+	<!-- spring与struts2整合 -->
+	<constant name="struts.objectFactory" value="spring" />
+	
+	<!-- 设置浏览器是否缓存静态内容,默认值为true(生产环境下使用),开发阶段最好关闭 -->
+	<constant name="struts.server.static.browserCache" value="false"/>
+	<!-- 当struts的配置文件修改后,系统是否自动重新加载该文件,默认值为false(生产环境下使用),开发阶
+	    段最好打开 -->
+	<constant name="struts.configuration.xml.reload" value="true"/>
+	<package name="sys" namespace="/" extends="json-default">
+		<!-- 拦截器 -->
+		<interceptors>
+			<interceptor name="login" class="com.zc.common.LoginInterceptor"></interceptor>
+			<interceptor-stack name="mystack">
+				<interceptor-ref name="login"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 默认拦截器 -->
+		<default-interceptor-ref name="mystack"></default-interceptor-ref>
+		<global-results>
+			<result name="index">/common/index.jsp</result>
+			<result name="login">/common/login.jsp</result>
+			<result name="input">/common/showError.jsp</result>
+			<result name="json" type="json">
+				<!-- 配置返回的Json字符串 -->
+		    	<param name="root">jsonText</param>
+           	</result>
+		</global-results>
+		<action name="sys_*" class="com.zc.action.SysAction" method="{1}">
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+		<action name="dict_*" class="com.zc.action.DictAction" method="{1}">
+			<result name="list">/dict/list.jsp</result>
+			<result name="update">/dict/update.jsp</result>
+		</action>
+		<action name="menu_*" class="com.zc.action.MenuAction" method="{1}">
+			<result name="list">/menu/list.jsp</result>
+			<result name="update">/menu/update.jsp</result>
+		</action>
+		<action name="role_*" class="com.zc.action.RoleAction" method="{1}">
+			<result name="list">/role/list.jsp</result>
+			<result name="update">/role/update.jsp</result>
+			<result name="menuTree">/role/menuTree.jsp</result>
+		</action>
+		<action name="user_*" class="com.zc.action.UserAction" method="{1}">
+			 <!-- 指定（限制）上传文件的类型，定义局部拦截器，修改默认拦截器的属性 
+                "fileUpload.maximumSize" ：限制上传最大的文件大小。 
+                "fileUpload.allowedTypes"：允许上传文件的类型。 
+                "fileUpload.allowedExtensions"：允许上传文件的可扩展文件类型。 -->
+            <!-- <interceptor-ref name="defaultStack">
+                <param name="fileUpload.maximumSize">500000000</param>
+                <param name="fileUpload.allowedTypes">image/gif,image/jpeg</param>
+                <param name="fileUpload.allowedExtensions">.gif,.jpg,.png</param>
+            </interceptor-ref> -->
+			<result name="list">/user/list.jsp</result>
+			<result name="update">/user/update.jsp</result>
+		</action>
+	<!-- </package>
+	<package name="base" namespace="/" extends="struts-default"> -->
+		<action name="class_*" class="com.zc.action.ClassAction" method="{1}">
+			<result name="list">/class/list.jsp</result>
+			<result name="slist">/class/slist.jsp</result>
+			<result name="update">/class/update.jsp</result>
+		</action>
+		<action name="student_*" class="com.zc.action.StudentAction" method="{1}">
+			<result name="list">/student/list.jsp</result>
+			<result name="tlist">/student/tlist.jsp</result>
+			<result name="update">/student/update.jsp</result>
+		</action>
+		<action name="teacher_*" class="com.zc.action.TeacherAction" method="{1}">
+			<result name="list">/teacher/list.jsp</result>
+			<result name="tlist">/teacher/tlist.jsp</result>
+			<result name="update">/teacher/update.jsp</result>
+		</action>
+	<!-- </package>
+	<package name="tch" namespace="/" extends="struts-default"> -->
+		<action name="course_*" class="com.zc.action.CourseAction" method="{1}">
+			<result name="list">/course/list.jsp</result>
+			<result name="clist">/course/clist.jsp</result>
+			<result name="update">/course/update.jsp</result>
+		</action>
+		<action name="coursesel_*" class="com.zc.action.SCourseAction" method="{1}">
+			<result name="list">/scourse/list.jsp</result>
+			<result name="update">/scourse/update.jsp</result>
+		</action>
+		<action name="score_*" class="com.zc.action.ScoreAction" method="{1}">
+			<result name="list">/score/list.jsp</result>
+			<result name="update">/score/update.jsp</result>
+		</action>
+	</package>
+</struts>
